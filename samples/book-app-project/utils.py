@@ -34,3 +34,13 @@ def print_books(books):
     for index, book in enumerate(books, start=1):
         status = "✅ Read" if book.read else "📖 Unread"
         print(f"{index}. {book.title} by {book.author} ({book.year}) - {status}")
+
+
+def get_title_input(prompt: str = "Title: ") -> str:
+    """Prompt the user for a book title and return the stripped value."""
+    return input(prompt).strip()
+
+
+def get_author_input(prompt: str = "Author: ") -> str:
+    """Prompt the user for an author name and return the stripped value."""
+    return input(prompt).strip()

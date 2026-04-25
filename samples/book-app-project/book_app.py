@@ -1,40 +1,23 @@
 import sys
 from books import BookCollection
+from utils import print_books, get_book_details, get_title_input, get_author_input
 
 
 # Global collection instance
 collection = BookCollection()
 
 
-def show_books(books):
-    """Display books in a user-friendly format."""
-    if not books:
-        print("No books found.")
-        return
-
-    print("\nYour Book Collection:\n")
-
-    for index, book in enumerate(books, start=1):
-        status = "✓" if book.read else " "
-        print(f"{index}. [{status}] {book.title} by {book.author} ({book.year})")
-
-    print()
-
-
 def handle_list():
     books = collection.list_books()
-    show_books(books)
+    print_books(books)
 
 
 def handle_add():
     print("\nAdd a New Book\n")
 
-    title = input("Title: ").strip()
-    author = input("Author: ").strip()
-    year_str = input("Year: ").strip()
+    title, author, year = get_book_details()
 
     try:
-        year = int(year_str) if year_str else 0
         collection.add_book(title, author, year)
         print("\nBook added successfully.\n")
     except ValueError as e:
@@ -44,7 +27,7 @@ def handle_add():
 def handle_remove():
     print("\nRemove a Book\n")
 
-    title = input("Enter the title of the book to remove: ").strip()
+    title = get_title_input("Enter the title of the book to remove: ")
     collection.remove_book(title)
 
     print("\nBook removed if it existed.\n")
@@ -53,10 +36,20 @@ def handle_remove():
 def handle_find():
     print("\nFind Books by Author\n")
 
-    author = input("Author name: ").strip()
+    author = get_author_input("Author name: ")
     books = collection.find_by_author(author)
 
-    show_books(books)
+    print_books(books)
+
+
+def handle_mark_read():
+    """Mark a book as read by title."""
+    print("\nMark Book as Read\n")
+    title = get_title_input("Enter the title of the book to mark as read: ")
+    if collection.mark_as_read(title):
+        print("\nBook marked as read.\n")
+    else:
+        print("\nBook not found.\n")
 
 
 def show_help():
@@ -64,11 +57,12 @@ def show_help():
 Book Collection Helper
 
 Commands:
-  list     - Show all books
-  add      - Add a new book
-  remove   - Remove a book by title
-  find     - Find books by author
-  help     - Show this help message
+  list       - Show all books
+  add        - Add a new book
+  remove     - Remove a book by title
+  find       - Find books by author
+  mark-read  - Mark a book as read
+  help       - Show this help message
 """)
 
 
@@ -87,6 +81,8 @@ def main():
         handle_remove()
     elif command == "find":
         handle_find()
+    elif command in ("mark-read", "mark"):
+        handle_mark_read()
     elif command == "help":
         show_help()
     else:
